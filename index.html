@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Education App v3.1 Stable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--pri:#b3261e;--pri-d:#8a1c16;--pri-l:#f7e2e0;--gold:#d9a21b;--bg:#e8eee9;--ink:#14201c;--mut:#566761;--card:#fff;--line:#cdd8d1;--ok:#17794a;--ok-l:#dcf2e6;--bad:#c0262d;--bad-l:#fbe3e4;--r:12px}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:"Be Vietnam Pro","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;min-height:100vh}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:18px 20px 40px}
+#hdr{background:var(--ink);color:#fff}
+#hdr .in{max-width:1120px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:12px}
+#hdr img{height:40px;width:auto;border-radius:6px;background:#fff}
+#hdr .br{font-weight:800;letter-spacing:.2px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+#hdr button{background:rgba(255,255,255,.12);border:0;color:#fff;border-radius:8px;padding:7px 11px;cursor:pointer}
+#hdr button:hover{background:rgba(255,255,255,.24)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:2px solid var(--ink);background:#fff;border-radius:10px;padding:9px 16px;font-weight:700;cursor:pointer}
+.btn:hover{background:#f1f5f2}
+.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}
+.btn.pri:hover{background:var(--pri-d);border-color:var(--pri-d)}
+.btn.ghost{border-color:var(--line);font-weight:500}
+.btn.danger{background:var(--bad);border-color:var(--bad);color:#fff}
+.btn.sm{padding:4px 10px;font-size:.85rem;border-width:1px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.row.end{justify-content:flex-end}
+label{display:block;font-weight:500;font-size:.92rem;margin:12px 0 0}
+input,select,textarea{display:block;width:100%;margin-top:4px;padding:9px 11px;border:1.5px solid var(--line);border-radius:9px;background:#fff}
+input[type=checkbox],input[type=radio]{display:inline-block;width:auto;margin:0 6px 0 0}
+input[type=color]{padding:2px;height:42px;width:90px}
+textarea{resize:vertical;min-height:70px}
+.card,.panel{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:20px}
+.panel.narrow{max-width:560px;margin:20px auto}
+h1,h2,h3{line-height:1.15;margin:0 0 8px}
+.mut{color:var(--mut)}.small{font-size:.85rem}
+.hero{display:grid;grid-template-columns:1.6fr 1fr;gap:24px;align-items:start;padding:30px 0 22px}
+.hero .tag{display:inline-block;background:var(--pri);color:#fff;padding:3px 12px;border-radius:99px;font-weight:700;font-size:.85rem;margin:0 0 12px}
+.hero h1{font-size:clamp(2rem,5.4vw,3.9rem);font-weight:800;color:var(--pri);text-transform:uppercase;letter-spacing:-.5px;margin-bottom:12px;overflow-wrap:anywhere}
+.hero .lead{font-size:1.12rem;max-width:60ch;margin:0 0 8px}
+.hero .org{font-weight:700;margin:0}
+.hero .info{margin:10px 0 0;padding:10px 14px;border-left:5px solid var(--gold);background:#fff;border-radius:0 8px 8px 0}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:16px}
+.mode{text-align:left;border:1.5px solid var(--line);border-top:8px solid var(--mc,var(--pri));background:#fff;border-radius:var(--r);padding:18px;cursor:pointer;display:block;width:100%}
+.mode:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 8px 20px rgba(20,32,28,.12)}
+.mode:disabled{opacity:.5;cursor:not-allowed}
+.mode .ic{font-size:2.2rem;line-height:1}
+.mode h3{font-size:1.35rem;margin:8px 0 4px}
+.mode p{margin:0;color:var(--mut);font-size:.92rem}
+.warn{background:#fff6d8;border:1.5px solid var(--gold);border-radius:10px;padding:10px 14px;margin-top:14px}
+.foot{text-align:center;color:var(--mut);font-size:.82rem;margin-top:30px}
+/* quiz */
+.qtop{display:flex;justify-content:space-between;gap:10px;font-weight:700;margin-bottom:8px;flex-wrap:wrap}
+.bar{height:10px;background:#dfe7e2;border-radius:9px;overflow:hidden;margin-bottom:18px}
+.bar>i{display:block;height:100%;background:var(--pri);width:0;transition:width .2s linear}
+.qt{font-size:clamp(1.3rem,2.8vw,2rem);font-weight:700;margin:0 0 20px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt{display:flex;gap:12px;align-items:center;text-align:left;background:#fff;border:2px solid var(--line);border-radius:12px;padding:14px;font-size:clamp(1rem,1.9vw,1.25rem);cursor:pointer;min-height:64px}
+.opt b{flex:none;width:36px;height:36px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center}
+.opt:hover:not(:disabled){border-color:var(--pri)}
+.opt.sel{border-color:var(--pri);background:var(--pri-l)}
+.opt.ok{border-color:var(--ok);background:var(--ok-l)}
+.opt.ok b{background:var(--ok)}
+.opt.bad{border-color:var(--bad);background:var(--bad-l)}
+.opt.bad b{background:var(--bad)}
+.opt.out{opacity:.35;text-decoration:line-through}
+.opt:disabled{cursor:default}
+.fb{margin-top:18px;padding:14px 16px;border-radius:10px;background:#f1f5f2;border-left:6px solid var(--mut)}
+.fb.ok{border-color:var(--ok);background:var(--ok-l)}.fb.bad{border-color:var(--bad);background:var(--bad-l)}
+.big{font-size:clamp(2.6rem,9vw,5rem);font-weight:800;color:var(--pri);line-height:1}
+.hud{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.hud>div{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:6px 14px;font-size:.9rem}
+.hud b{font-size:1.4rem;display:block;line-height:1.1}
+.pop{position:fixed;left:50%;top:22%;transform:translateX(-50%);background:var(--ok);color:#fff;padding:8px 20px;border-radius:99px;font-weight:800;font-size:1.3rem;z-index:30;pointer-events:none}
+.teams{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.team{border:3px solid var(--line);background:#fff;border-radius:var(--r);padding:12px 16px;text-align:center}
+.team.t0{--tc:#2a5db0}.team.t1{--tc:#c98a0a}
+.team .nm{font-weight:800;color:var(--tc)}
+.team .pt{font-size:clamp(2rem,6vw,3.6rem);font-weight:800;line-height:1}
+.team .key{font-size:.85rem;color:var(--mut)}
+.team.act{border-color:var(--tc);box-shadow:0 0 0 5px color-mix(in srgb,var(--tc) 25%,transparent)}
+.team.dim{opacity:.55}
+.rv{border:1.5px solid var(--line);border-left-width:6px;border-radius:10px;padding:12px 14px;margin-top:10px;background:#fff}
+.rv.ok{border-left-color:var(--ok)}.rv.bad{border-left-color:var(--bad)}
+/* admin */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}
+.tabs button{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 16px;font-weight:700;cursor:pointer}
+.tabs button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+.tw{overflow-x:auto;border:1.5px solid var(--line);border-radius:10px;background:#fff;margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:#f1f5f2;position:sticky;top:0;white-space:nowrap}
+.badge{display:inline-block;padding:1px 9px;border-radius:99px;font-size:.78rem;font-weight:700;background:#e3e9e5;white-space:nowrap}
+.badge.pub{background:var(--ok-l);color:var(--ok)}.badge.dr{background:#fff0c2;color:#7a5600}
+.tool{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+.tool>*{flex:1 1 150px}.tool>.btn{flex:0 0 auto}
+.chk{display:flex;gap:8px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line)}
+.chk input{margin:0}
+.ok-t{color:var(--ok);font-weight:700}.bad-t{color:var(--bad);font-weight:700}
+dialog{border:0;border-radius:14px;padding:0;width:min(680px,94vw);max-height:92vh;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(10,20,16,.6)}
+.ed{padding:20px;max-height:90vh;overflow:auto}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 20px;border-radius:10px;z-index:99;max-width:92vw;display:none}
+#toast.bad{background:var(--bad)}
+.logo-prev{max-height:70px;margin-top:6px;background:#eee;border-radius:6px}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.opts,.grid2{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+body.fs .wrap{max-width:1500px}
+</style>
+</head>
+<body>
+<header id="hdr"></header>
+<main class="wrap" id="app"></main>
+<div id="toast" role="status"></div>
+<dialog id="dlg"></dialog>
+<dialog id="dlg2"></dialog>
+
+<script>
+'use strict';
+/* ====================== TIỆN ÍCH ====================== */
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const hash=s=>{let h1=0xdeadbeef,h2=0x41c6ce57;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(36)};
+const LV={easy:'Dễ',medium:'Trung bình',hard:'Khó'};
+const K={cfg:'eduapp.cfg',bank:'eduapp.bank',hist:'eduapp.hist',prof:'eduapp.prof'};
+const LS={
+  get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{const s=JSON.stringify(v);localStorage.setItem(k,s);return localStorage.getItem(k)===s}catch(e){return false}}
+};
+function toast(m,bad){const t=$('#toast');t.textContent=m;t.className=bad?'bad':'';t.style.display='block';clearTimeout(toast.id);toast.id=setTimeout(()=>t.style.display='none',bad?6000:2800)}
+function download(name,text,mime='application/json'){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:mime+';charset=utf-8'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+const stamp=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes())};
+function ask(msg,o={}){return new Promise(res=>{const d=$('#dlg2');d.innerHTML=`<div class="ed"><p>${msg}</p>${o.type?`<input id="askin" placeholder="Nhập ${esc(o.type)} để xác nhận" autocomplete="off">`:''}<div class="row end"><button class="btn ghost" id="ac">Hủy</button><button class="btn ${o.danger?'danger':'pri'}" id="ao">${o.ok||'Đồng ý'}</button></div></div>`;const done=v=>{d.close();res(v)};$('#ac',d).onclick=()=>done(false);$('#ao',d).onclick=()=>{if(o.type&&$('#askin',d).value.trim()!==o.type){toast('Chưa nhập đúng "'+o.type+'"',true);return}done(true)};d.oncancel=()=>res(false);d.showModal()})}
+
+/* Bộ hẹn giờ có hủy tập trung (tránh callback cũ chạy sau khi thoát bài) */
+let epoch=0,KEY=null;
+const T={ids:[],
+  to(fn,ms){const e=epoch;const id=setTimeout(()=>{if(e===epoch)fn()},ms);this.ids.push(['t',id]);return id},
+  iv(fn,ms){const e=epoch;const id=setInterval(()=>{if(e===epoch)fn()},ms);this.ids.push(['i',id]);return id},
+  clear(){this.ids.forEach(([k,id])=>k==='t'?clearTimeout(id):clearInterval(id));this.ids=[]}};
+document.addEventListener('keydown',e=>{if(KEY&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))KEY(e)});
+
+/* Âm thanh */
+let ac;function beep(f,d=.12,type='sine',v=.08){if(!cfg.sound)return;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type=type;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(ac.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+d);o.stop(ac.currentTime+d)}catch(e){}}
+const SFX={ok(){beep(660,.1);setTimeout(()=>beep(880,.15),90)},bad(){beep(180,.3,'sawtooth',.06)},tick(){beep(1000,.04,'square',.03)},buzz(){beep(520,.22,'square',.07)},win(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.2),i*120))}};
+
+/* ====================== INDEXEDDB (HỌC LIỆU) ====================== */
+const DB={
+  open(){return this._p||(this._p=new Promise((res,rej)=>{const r=indexedDB.open('eduapp',1);r.onupgradeneeded=()=>r.result.createObjectStore('materials',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}))},
+  async tx(mode,fn){const db=await this.open();return new Promise((res,rej)=>{const t=db.transaction('materials',mode);const rq=fn(t.objectStore('materials'));t.oncomplete=()=>res(rq&&rq.result);t.onerror=()=>rej(t.error)})},
+  all(){return this.tx('readonly',s=>s.getAll())},
+  put(m){return this.tx('readwrite',s=>s.put(m))},
+  del(id){return this.tx('readwrite',s=>s.delete(id))},
+  clear(){return this.tx('readwrite',s=>s.clear())}
+};
+
+/* ====================== DỮ LIỆU MẶC ĐỊNH ====================== */
+const DEF_CFG={title:'ANH HÙNG NGUYỄN VĂN TRỖI',tag:'Cuộc thi tìm hiểu',desc:'Học, thi thử, phản xạ và đối kháng cùng bộ câu hỏi về người anh hùng biệt động Sài Gòn.',org:'',info:'',color:'#b3261e',logo:'',pinHash:'',sound:true,model:'gemini-2.0-flash'};
+const TP=['Tiểu sử','Hoạt động cách mạng','Các mốc lịch sử','Nhân vật liên quan','Ý nghĩa & học tập'];
+function defaultBank(){
+  const R=[ // [câu hỏi, A,B,C,D, đáp án, giải thích, mức, chủ đề]
+  ['Nguyễn Văn Trỗi sinh năm nào?','1938','1939','1940','1941','C','Anh sinh ngày 1/2/1940.','easy',0],
+  ['Nguyễn Văn Trỗi sinh vào tháng nào?','Tháng 1','Tháng 2','Tháng 5','Tháng 10','B','Anh sinh ngày 1/2/1940.','medium',0],
+  ['Quê gốc của Nguyễn Văn Trỗi ở tỉnh nào?','Quảng Ngãi','Bình Định','Thừa Thiên Huế','Quảng Nam','D','Anh quê ở Quảng Nam (Điện Bàn).','easy',0],
+  ['Nghề nghiệp của Nguyễn Văn Trỗi trước khi bị bắt là gì?','Thợ điện','Thợ mộc','Nông dân','Giáo viên','A','Anh làm thợ điện ở Sài Gòn.','easy',0],
+  ['Nguyễn Văn Trỗi hoạt động cách mạng chủ yếu ở đâu?','Hà Nội','Huế','Cần Thơ','Sài Gòn','D','Anh hoạt động trong nội đô Sài Gòn.','easy',1],
+  ['Nguyễn Văn Trỗi là chiến sĩ của lực lượng nào?','Hải quân','Biệt động Sài Gòn – Gia Định','Không quân','Dân quân tự vệ miền Bắc','B','Anh là chiến sĩ biệt động Sài Gòn – Gia Định.','easy',1],
+  ['"Biệt động" là lực lượng như thế nào?','Lực lượng vũ trang hoạt động bí mật, đánh vào nơi hiểm yếu của địch trong thành phố','Lực lượng chuyên canh gác biên giới','Lực lượng chỉ hoạt động trên biển','Lực lượng dân sự làm công tác văn hóa','A','Biệt động hoạt động bí mật, bất ngờ trong nội đô.','medium',1],
+  ['Nhiệm vụ của Nguyễn Văn Trỗi là đặt mìn để tiêu diệt ai?','Tổng thống Mỹ','Bộ trưởng Quốc phòng Mỹ Mác Na-ma-ra','Thủ tướng Anh','Đại sứ Pháp','B','Mục tiêu là Bộ trưởng Quốc phòng Mỹ Robert McNamara khi sang Sài Gòn.','easy',1],
+  ['Mác Na-ma-ra (McNamara) giữ chức vụ gì?','Bộ trưởng Ngoại giao Mỹ','Bộ trưởng Quốc phòng Mỹ','Tổng thống Mỹ','Đại sứ Mỹ tại Sài Gòn','B','McNamara là Bộ trưởng Quốc phòng Mỹ.','medium',3],
+  ['McNamara là người của quốc gia nào?','Pháp','Anh','Mỹ','Nhật Bản','C','Ông là quan chức cao cấp của Hoa Kỳ.','easy',3],
+  ['Anh Trỗi được giao đặt mìn ở cây cầu nào?','Cầu Bình Lợi','Cầu Sài Gòn','Cầu Thị Nghè','Cầu Công Lý','D','Địa điểm là cầu Công Lý.','easy',1],
+  ['Anh Trỗi dự định dùng phương tiện nào để thực hiện kế hoạch?','Mìn','Tên lửa','Pháo binh','Máy bay','A','Anh được giao đặt mìn dưới cầu.','easy',1],
+  ['Kế hoạch đặt mìn diễn ra vào thời điểm nào của năm 1964?','Tháng 5','Tháng 1','Tháng 9','Tháng 12','A','Anh bị bắt ngày 9/5/1964 khi chuẩn bị thực hiện.','medium',2],
+  ['Nguyễn Văn Trỗi bị địch bắt vào ngày nào?','2/9/1964','9/5/1964','30/4/1964','19/5/1964','B','Ngày 9/5/1964, kế hoạch bị phát hiện và anh bị bắt.','medium',2],
+  ['Kết quả của kế hoạch đặt mìn là gì?','Mìn nổ, tiêu diệt mục tiêu','Mục tiêu đầu hàng','Anh bị bắt khi kế hoạch bị phát hiện','Kế hoạch bị hoãn vì anh bỏ cuộc','C','Anh bị bắt trước khi kế hoạch hoàn thành.','medium',1],
+  ['Khi bị địch tra tấn, thái độ của Nguyễn Văn Trỗi là gì?','Khai báo hết','Van xin tha mạng','Kiên trung, bất khuất, không khai','Im lặng vì sợ hãi','C','Anh giữ vững khí tiết, không khai báo.','easy',1],
+  ['Tòa án quân sự của chính quyền Sài Gòn đã tuyên án anh như thế nào?','Tử hình','Chung thân','20 năm tù','Trả tự do','A','Anh bị kết án tử hình.','easy',2],
+  ['Nguyễn Văn Trỗi hy sinh vào ngày nào?','9/5/1964','1/2/1964','15/10/1964','30/4/1975','C','Anh hy sinh ngày 15/10/1964.','medium',2],
+  ['Anh Trỗi hy sinh vào tháng nào?','Tháng 10','Tháng 5','Tháng 2','Tháng 12','A','Ngày 15/10/1964.','easy',2],
+  ['Nguyễn Văn Trỗi hy sinh khi bao nhiêu tuổi?','20','22','24','30','C','Sinh 1940, hy sinh 1964: 24 tuổi.','medium',0],
+  ['Anh Trỗi bị bắt khi bao nhiêu tuổi?','22','23','24','25','C','Từ 1/2/1940 đến 9/5/1964 là 24 tuổi.','hard',0],
+  ['Từ lúc bị bắt (9/5/1964) đến lúc hy sinh (15/10/1964) khoảng bao lâu?','1 tháng','3 tháng','5 tháng','8 tháng','C','Khoảng hơn 5 tháng.','hard',2],
+  ['Trước giờ hy sinh, anh Trỗi hô vang khẩu hiệu nào?','"Hồ Chí Minh muôn năm!"','"Hoàng đế vạn tuế!"','"Mỹ muôn năm!"','"Đả đảo nhân dân Việt Nam!"','A','Anh hô: "Việt Nam muôn năm! Hồ Chí Minh muôn năm!"','medium',1],
+  ['Ra pháp trường, anh Trỗi có hành động nào thể hiện sự bất khuất?','Xin tha tội','Quay mặt đi','Khóc lóc','Từ chối bịt mắt, hiên ngang hô khẩu hiệu','D','Anh từ chối bịt mắt và hô vang khẩu hiệu cách mạng.','medium',1],
+  ['Vợ của anh Nguyễn Văn Trỗi tên là gì?','Nguyễn Thị Định','Phan Thị Quyên','Võ Thị Sáu','Nguyễn Thị Minh Khai','B','Vợ anh là chị Phan Thị Quyên.','medium',3],
+  ['Nguyễn Văn Trỗi được truy tặng danh hiệu nào?','Anh hùng Lao động','Nhà giáo Nhân dân','Anh hùng Lực lượng vũ trang nhân dân','Huân chương Lao động hạng Nhất','C','Anh được truy tặng danh hiệu Anh hùng LLVTND.','medium',2],
+  ['Nguyễn Văn Trỗi hy sinh trong thời kỳ lịch sử nào?','Kháng chiến chống Pháp','Kháng chiến chống Mỹ, cứu nước','Cách mạng tháng Tám','Thời kỳ Đổi mới','B','Năm 1964 thuộc kháng chiến chống Mỹ, cứu nước.','easy',2],
+  ['Sài Gòn ngày nay là thành phố nào?','Hà Nội','Đà Nẵng','Thành phố Hồ Chí Minh','Hải Phòng','C','Sài Gòn nay là TP. Hồ Chí Minh.','easy',2],
+  ['Từ năm anh hy sinh (1964) đến năm 2026 là bao nhiêu năm?','52','60','62','64','C','2026 − 1964 = 62.','medium',2],
+  ['Nếu còn sống, năm 2026 anh Trỗi bao nhiêu tuổi (tính theo năm sinh)?','76','84','86','90','C','2026 − 1940 = 86.','medium',0],
+  ['Việc đặt mìn ở cầu Công Lý nhằm mục đích gì?','Phá hoại giao thông','Ngăn chặn âm mưu leo thang chiến tranh của Mỹ','Cướp tài sản','Gây náo loạn đô thị','B','Hành động nhằm chống sự can thiệp, leo thang của Mỹ.','hard',1],
+  ['Phẩm chất tiêu biểu của Nguyễn Văn Trỗi là gì?','Lòng yêu nước và tinh thần dũng cảm','Thờ ơ trước vận mệnh đất nước','Ham danh lợi','Né tránh khó khăn','A','Anh là biểu tượng của lòng yêu nước, dũng cảm.','easy',4],
+  ['Chúng ta nên học điều gì từ tấm gương Nguyễn Văn Trỗi?','Sống ích kỷ','Sống có lý tưởng, trách nhiệm với đất nước','Chỉ lo việc riêng','Ngại khó khăn','B','Bài học: lý tưởng, trách nhiệm, dũng cảm.','easy',4],
+  ['Hình thức nào sau đây thể hiện sự tri ân người anh hùng?','Đặt tên đường, tên trường học','Xóa bỏ di tích','Quên lãng','Bôi nhọ hình ảnh','A','Nhiều đường phố, trường học mang tên anh.','easy',4],
+  ['Lực lượng đối đầu với biệt động Sài Gòn thời kỳ này gồm?','Quân Mỹ và chính quyền Sài Gòn','Quân Pháp','Quân Nhật','Quân Thanh','A','Đó là Mỹ và chính quyền Sài Gòn.','medium',3],
+  ['Ngày 30/4/1975 là ngày gì?','Quốc khánh','Giải phóng miền Nam, thống nhất đất nước','Ngày Thương binh – Liệt sĩ','Ngày Nhà giáo','B','30/4/1975 miền Nam hoàn toàn giải phóng.','easy',2],
+  ['Từ khi anh Trỗi hy sinh (1964) đến ngày thống nhất đất nước (1975) là bao nhiêu năm?','9','10','11','12','C','1975 − 1964 = 11.','medium',2],
+  ['Năm 1964, Chủ tịch nước Việt Nam Dân chủ Cộng hòa là ai?','Hồ Chí Minh','Tôn Đức Thắng','Trường Chinh','Lê Duẩn','A','Hồ Chí Minh là Chủ tịch nước đến năm 1969.','hard',3],
+  ['Năm 1964, thủ đô của nước Việt Nam Dân chủ Cộng hòa là?','Huế','Hà Nội','Sài Gòn','Hải Phòng','B','Thủ đô miền Bắc là Hà Nội.','easy',3],
+  ['Câu nào đúng về Nguyễn Văn Trỗi?','Sinh năm 1940, quê Quảng Nam','Sinh năm 1950, quê Hà Nội','Làm thợ may ở Huế','Hy sinh năm 1975','A','Anh sinh 1940, quê Quảng Nam.','medium',0],
+  ['Câu nào SAI về Nguyễn Văn Trỗi?','Anh làm thợ điện','Anh hoạt động ở Sài Gòn','Anh hy sinh năm 1975','Anh sinh năm 1940','C','Anh hy sinh năm 1964, không phải 1975.','medium',0],
+  ['Sự kiện nào xảy ra SAU CÙNG trong cuộc đời anh Trỗi?','Anh ra đời','Anh bị bắt','Anh bị tòa án kết án','Anh hy sinh','D','Anh hy sinh ngày 15/10/1964.','medium',2],
+  ['Họ của Anh hùng Nguyễn Văn Trỗi là gì?','Trần','Lê','Phạm','Nguyễn','D','Họ Nguyễn.','easy',0],
+  ['Đặc điểm nổi bật trong cách hoạt động của biệt động thành là gì?','Công khai, tấn công trực diện','Bí mật, bất ngờ, đánh vào đầu não','Chỉ phòng thủ','Hoạt động ở vùng núi cao','B','Biệt động hoạt động bí mật, bất ngờ trong thành phố.','hard',1],
+  ['Vì sao McNamara trở thành mục tiêu của kế hoạch?','Là người có vai trò lớn trong chỉ đạo chiến tranh của Mỹ','Là nhà ngoại giao thân thiện','Là doanh nhân','Là nhà báo','A','Ông là Bộ trưởng Quốc phòng Mỹ, tham gia chỉ đạo chiến tranh.','hard',1],
+  ['Hình ảnh anh Trỗi trước giờ hy sinh trở thành biểu tượng của điều gì?','Tinh thần bất khuất của thế hệ thanh niên yêu nước','Sự đầu hàng','Sự sợ hãi','Sự thờ ơ','A','Tấm gương bất khuất truyền cảm hứng cho nhiều thế hệ.','medium',4],
+  ['Học sinh có thể noi gương Nguyễn Văn Trỗi bằng việc làm nào?','Học tập tốt, sống có trách nhiệm','Bỏ học','Vi phạm nội quy','Thờ ơ với cộng đồng','A','Noi gương bằng việc làm thiết thực hằng ngày.','easy',4],
+  ['Tên gọi đầy đủ của nước miền Bắc năm 1964 là gì?','Việt Nam Cộng hòa','Việt Nam Dân chủ Cộng hòa','Đại Nam','Đại Việt','B','Miền Bắc là Việt Nam Dân chủ Cộng hòa.','medium',3],
+  ['Cầu Công Lý – nơi anh Trỗi được giao nhiệm vụ – nằm ở thành phố nào?','Hà Nội','Huế','Sài Gòn','Đà Nẵng','C','Cầu Công Lý nằm trong nội đô Sài Gòn.','easy',1],
+  ['Hành động đặt mìn của anh Trỗi thể hiện tinh thần gì?','Dám hy sinh vì độc lập dân tộc','Ham danh vọng','Tư lợi cá nhân','Sợ hãi kẻ thù','A','Anh sẵn sàng hy sinh vì độc lập dân tộc.','easy',1]
+  ];
+  return R.map((r,i)=>({id:'nvt-'+String(i+1).padStart(2,'0'),q:r[0],o:[r[1],r[2],r[3],r[4]],a:'ABCD'.indexOf(r[5]),exp:r[6],lv:r[7],topic:TP[r[8]],src:'Tài liệu giáo viên',st:'published'}));
+}
+
+/* ====================== TRẠNG THÁI ====================== */
+let cfg,bank,hist,prof,run=null,view='home',adminTab='cfg';
+function load(){
+  cfg={...DEF_CFG,...LS.get(K.cfg,{})};
+  bank=LS.get(K.bank,null);if(!Array.isArray(bank)){bank=defaultBank();LS.set(K.bank,bank)}
+  hist=LS.get(K.hist,[]);if(!Array.isArray(hist))hist=[];
+  prof=LS.get(K.prof,{name:'',cls:''});
+}
+const saveBank=()=>{const ok=LS.set(K.bank,bank);if(!ok)toast('Không lưu được ngân hàng câu hỏi (bộ nhớ trình duyệt đầy hoặc bị chặn).',true);return ok};
+const saveHist=()=>LS.set(K.hist,hist);
+const published=()=>bank.filter(q=>q.st==='published');
+function mix(h,t,p){const n=parseInt(h.slice(1),16),r=n>>16,g=n>>8&255,b=n&255,X=t==='w'?255:0,f=v=>Math.round(v+(X-v)*p);return '#'+[f(r),f(g),f(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function applyTheme(){const c=/^#[0-9a-f]{6}$/i.test(cfg.color)?cfg.color:'#b3261e',s=document.documentElement.style;s.setProperty('--pri',c);s.setProperty('--pri-d',mix(c,'b',.25));s.setProperty('--pri-l',mix(c,'w',.88));document.title=cfg.title+' – Education App'}
+function renderHeader(){
+  $('#hdr').innerHTML=`<div class="in">${cfg.logo?`<img src="${cfg.logo}" alt="Logo">`:''}<div class="br" data-act="home" title="Về trang chủ">${esc(cfg.title)}</div><button data-act="snd" title="Bật/tắt âm thanh">${cfg.sound?'🔊':'🔇'}</button><button data-act="fs" title="Toàn màn hình">⛶</button><button data-act="adm">⚙ Admin</button></div>`;
+}
+document.addEventListener('click',e=>{const b=e.target.closest('#hdr [data-act],[data-go]');if(!b)return;
+  if(b.dataset.go){go(b.dataset.go);return}
+  const a=b.dataset.act;
+  if(a==='home')go('home');
+  if(a==='adm')go('admin');
+  if(a==='snd'){cfg.sound=!cfg.sound;LS.set(K.cfg,cfg);renderHeader();if(cfg.sound)SFX.ok()}
+  if(a==='fs'){if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen?.().catch(()=>toast('Trình duyệt không cho phép toàn màn hình',true))}
+});
+document.addEventListener('fullscreenchange',()=>document.body.classList.toggle('fs',!!document.fullscreenElement));
+function go(v,a){epoch++;T.clear();KEY=null;run=null;view=v;window.scrollTo(0,0);({home:viewHome,study:viewStudy,exam:viewExam,reflex:viewReflex,versus:viewVersus,admin:viewAdmin})[v](a);}
+
+/* ====================== TRANG CHỦ ====================== */
+function viewHome(){
+  const n=published().length,ok=n>=4;
+  const M=[['study','📘','Tự học','Biết đúng/sai ngay, xem giải thích, ôn lại câu sai.','#1f7a6d'],['exam','📝','Thi thử','Giới hạn thời gian từng câu, chỉ công bố đáp án khi kết thúc.','#2a5db0'],['reflex','⚡','Phản xạ nhanh','Trả lời liên tục, thưởng tốc độ và combo.','#c98a0a'],['versus','🏆','Đối kháng','2 người / 2 đội giành quyền bằng phím A và L.','var(--pri)']];
+  app.innerHTML=`<section class="hero"><div><span class="tag">${esc(cfg.tag)}</span><h1>${esc(cfg.title)}</h1><p class="lead">${esc(cfg.desc)}</p>${cfg.org?`<p class="org">${esc(cfg.org)}</p>`:''}${cfg.info?`<p class="info">${esc(cfg.info)}</p>`:''}</div>
+  <form class="card" onsubmit="return false"><h2>Hồ sơ học sinh</h2><label>Họ và tên<input id="pn" value="${esc(prof.name)}" autocomplete="name"></label><label>Lớp / nhóm<input id="pc" value="${esc(prof.cls)}"></label><p class="mut small" id="ps">Thông tin được lưu trên máy này và dùng cho các lượt sau.</p></form></section>
+  <section class="modes">${M.map(m=>`<button class="mode" style="--mc:${m[4]}" data-go="${m[0]}" ${ok?'':'disabled'}><span class="ic">${m[1]}</span><h3>${m[2]}</h3><p>${m[3]}</p></button>`).join('')}</section>
+  ${ok?'':`<div class="warn">Cần ít nhất <b>4 câu hỏi đã xuất bản</b> để học (hiện có ${n}). Giáo viên vào <b>Admin</b> → <b>Ngân hàng câu hỏi</b> để xuất bản câu hỏi.</div>`}
+  <p class="foot">Education App v3.1 Stable · ${n} câu hỏi đang dùng cho học sinh</p>`;
+  const sv=()=>{prof={name:$('#pn').value.trim(),cls:$('#pc').value.trim()};$('#ps').textContent=LS.set(K.prof,prof)?'Đã lưu.':'Không lưu được hồ sơ trên trình duyệt này.'};
+  $('#pn').oninput=sv;$('#pc').oninput=sv;
+}
+const app=$('#app');
+
+/* ====================== DÙNG CHUNG CHO CÁC CHẾ ĐỘ ====================== */
+function mkItems(qs){return qs.map(q=>{const ix=shuffle([0,1,2,3]);return{q,opts:ix.map(i=>q.o[i]),ans:ix.indexOf(q.a)}})}
+const optsHTML=(it,extra=()=> '')=>`<div class="opts">${it.opts.map((o,k)=>`<button class="opt ${extra(k)}" data-k="${k}"><b>${'ABCD'[k]}</b><span>${esc(o)}</span></button>`).join('')}</div>`;
+function addHist(mode,score,result,dur,name,cls){
+  hist.push({id:uid(),ts:Date.now(),name:name??prof.name??'',cls:cls??prof.cls??'',mode,score:String(score),result,dur:Math.round(dur)});
+  if(!saveHist())toast('Không lưu được lịch sử lượt chơi.',true);
+}
+function setupShell(title,desc,body,startLabel='Bắt đầu'){
+  app.innerHTML=`<div class="panel narrow"><h2>${title}</h2><p class="mut">${desc}</p>${body}<div class="row"><button class="btn pri" id="go">${startLabel}</button><button class="btn ghost" data-go="home">Quay lại</button></div></div>`;
+}
+const cntOpts=(vals,max)=>vals.filter(v=>v<max).concat([max]).map((v,i,a)=>`<option value="${v}">${v===max?'Tất cả ('+max+')':v}</option>`).join('');
+const whoLine=()=>prof.name?`${esc(prof.name)}${prof.cls?' – '+esc(prof.cls):''}`:'Chưa nhập tên (vào trang chủ để nhập)';
+
+/* ====================== 1. TỰ HỌC ====================== */
+function viewStudy(){
+  const pub=published(),tp=[...new Set(pub.map(q=>q.topic).filter(Boolean))];
+  setupShell('📘 Tự học','Biết đúng/sai ngay sau mỗi câu và xem giải thích. Câu hỏi và đáp án được trộn ngẫu nhiên.',
+  `<label>Mức độ<select id="sl"><option value="">Tất cả</option>${Object.entries(LV).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label>
+   <label>Chủ đề<select id="st"><option value="">Tất cả</option>${tp.map(t=>`<option>${esc(t)}</option>`).join('')}</select></label>
+   <label>Số câu<select id="sc"><option value="10">10</option><option value="20">20</option><option value="0">Tất cả</option></select></label>`);
+  $('#go').onclick=()=>{let qs=pub.filter(q=>(!$('#sl').value||q.lv===$('#sl').value)&&(!$('#st').value||q.topic===$('#st').value));
+    if(!qs.length)return toast('Không có câu hỏi phù hợp bộ lọc.',true);
+    qs=shuffle(qs);const n=+$('#sc').value;if(n)qs=qs.slice(0,n);studyRun(qs)};
+}
+function studyRun(qs){epoch++;T.clear();run={items:mkItems(qs),i:0,res:[],t0:Date.now(),locked:false};studyShow()}
+function studyShow(){
+  const it=run.items[run.i],n=run.items.length;run.locked=false;
+  app.innerHTML=`<div class="panel"><div class="qtop"><span>Câu ${run.i+1}/${n}</span><span>Đúng: ${run.res.filter(r=>r.ok).length}</span></div><div class="bar"><i style="width:${run.i/n*100}%"></i></div><h2 class="qt">${esc(it.q.q)}</h2>${optsHTML(it)}<div id="fb"></div></div>`;
+  const pick=k=>{if(run.locked)return;run.locked=true;const ok=k===it.ans;run.res.push({q:it.q,opts:it.opts,ans:it.ans,chosen:k,ok});
+    $$('.opt').forEach((b,j)=>{b.disabled=true;if(j===it.ans)b.classList.add('ok');else if(j===k)b.classList.add('bad')});
+    ok?SFX.ok():SFX.bad();
+    $('#fb').innerHTML=`<div class="fb ${ok?'ok':'bad'}"><b>${ok?'Chính xác!':'Chưa đúng. Đáp án: '+'ABCD'[it.ans]+'.'}</b><p style="margin:6px 0 0">${esc(it.q.exp||'Chưa có giải thích.')}</p></div><div class="row"><button class="btn pri" id="nx">${run.i+1<n?'Câu tiếp (Enter)':'Xem kết quả (Enter)'}</button></div>`;
+    $('#nx').onclick=nx;$('#nx').focus()};
+  const nx=()=>{run.i++;run.i>=n?studyEnd():studyShow()};
+  $$('.opt').forEach(b=>b.onclick=()=>pick(+b.dataset.k));
+  KEY=e=>{if('1234'.includes(e.key)&&e.key.length===1)pick(+e.key-1);else if(e.key==='Enter'&&run.locked)nx()};
+}
+function studyEnd(){
+  const n=run.items.length,ok=run.res.filter(r=>r.ok).length,wrong=run.res.filter(r=>!r.ok),pct=Math.round(ok/n*100);
+  addHist('Tự học',`${ok}/${n}`,pct+'% đúng',(Date.now()-run.t0)/1000);SFX.win();
+  app.innerHTML=`<div class="panel"><h2>Kết quả tự học</h2><div class="big">${ok}/${n}</div><p>${pct}% câu đúng · ${whoLine()}</p>
+  <div class="row"><button class="btn pri" id="rv" ${wrong.length?'':'disabled'}>Ôn lại ${wrong.length} câu sai</button><button class="btn" data-go="study">Học lượt mới</button><button class="btn ghost" data-go="home">Trang chủ</button></div></div>
+  ${wrong.map(r=>reviewHTML(r)).join('')}`;
+  $('#rv').onclick=()=>studyRun(wrong.map(r=>r.q));
+}
+function reviewHTML(r){return `<div class="rv ${r.ok?'ok':'bad'}"><b>${esc(r.q.q)}</b><br>Bạn chọn: <span class="${r.ok?'ok-t':'bad-t'}">${r.chosen==null?'(không trả lời)':'ABCD'[r.chosen]+'. '+esc(r.opts[r.chosen])}</span><br>Đáp án đúng: <span class="ok-t">${'ABCD'[r.ans]}. ${esc(r.opts[r.ans])}</span>${r.q.exp?`<br><span class="mut">${esc(r.q.exp)}</span>`:''}</div>`}
+
+/* ====================== 2. THI THỬ ====================== */
+function viewExam(){
+  const pub=published();
+  setupShell('📝 Thi thử','Đáp án không được công bố trong lúc thi. Hết giờ app tự chuyển câu.',
+  `<label>Số câu<select id="sc">${cntOpts([10,20,30,40],pub.length)}</select></label>
+   <label>Thời gian mỗi câu<select id="ss"><option value="15">15 giây</option><option value="20" selected>20 giây</option><option value="30">30 giây</option><option value="45">45 giây</option><option value="60">60 giây</option></select></label>`);
+  $('#go').onclick=()=>{const qs=shuffle(pub).slice(0,+$('#sc').value);run={items:mkItems(qs),i:0,res:[],sec:+$('#ss').value,t0:Date.now(),sel:null};examShow()};
+}
+function examShow(){
+  T.clear();const it=run.items[run.i],n=run.items.length;run.sel=null;run.dead=Date.now()+run.sec*1000;
+  app.innerHTML=`<div class="panel"><div class="qtop"><span>Câu ${run.i+1}/${n}</span><span id="et">${run.sec}s</span></div><div class="bar"><i id="eb" style="width:100%"></i></div><h2 class="qt">${esc(it.q.q)}</h2>${optsHTML(it)}<div class="row"><button class="btn pri" id="nx">${run.i+1<n?'Chốt & câu tiếp':'Chốt & nộp bài'}</button><span class="mut small">Phím 1–4 để chọn, Enter để chốt.</span></div></div>`;
+  const sel=k=>{run.sel=k;$$('.opt').forEach((b,j)=>b.classList.toggle('sel',j===k))};
+  $$('.opt').forEach(b=>b.onclick=()=>sel(+b.dataset.k));
+  $('#nx').onclick=examNext;
+  KEY=e=>{if('1234'.includes(e.key)&&e.key.length===1)sel(+e.key-1);else if(e.key==='Enter')examNext()};
+  T.iv(()=>{const left=Math.max(0,run.dead-Date.now());const t=$('#et');if(!t)return;t.textContent=Math.ceil(left/1000)+'s';$('#eb').style.width=(left/(run.sec*1000)*100)+'%';if(left<=0)examNext()},100);
+}
+function examNext(){
+  T.clear();const it=run.items[run.i];run.res.push({q:it.q,opts:it.opts,ans:it.ans,chosen:run.sel,ok:run.sel===it.ans});run.i++;
+  run.i>=run.items.length?examEnd():examShow();
+}
+function examEnd(){
+  KEY=null;const n=run.items.length,ok=run.res.filter(r=>r.ok).length,sc=(ok/n*10).toFixed(1);
+  addHist('Thi thử',`${ok}/${n} (${sc}/10)`,sc>=8?'Giỏi':sc>=6.5?'Khá':sc>=5?'Đạt':'Chưa đạt',(Date.now()-run.t0)/1000);SFX.win();
+  const res=run.res;
+  app.innerHTML=`<div class="panel"><h2>Kết quả thi thử</h2><div class="big">${sc}<small style="font-size:.4em"> / 10</small></div><p>${ok}/${n} câu đúng · ${whoLine()}</p>
+  <div class="row"><button class="btn" data-go="exam">Thi lại</button><button class="btn ghost" data-go="home">Trang chủ</button><label style="margin:0"><input type="checkbox" id="ow"> Chỉ hiện câu sai</label></div></div><div id="rl"></div>`;
+  const draw=()=>$('#rl').innerHTML=res.filter(r=>!$('#ow').checked||!r.ok).map(reviewHTML).join('')||'<p class="mut">Không có câu sai. Xuất sắc!</p>';
+  $('#ow').onchange=draw;draw();
+}
+
+/* ====================== 3. PHẢN XẠ NHANH ====================== */
+function viewReflex(){
+  setupShell('⚡ Phản xạ nhanh','Trả lời càng nhiều càng tốt. Đúng nhanh có điểm thưởng tốc độ, đúng liên tiếp có Combo, sai sẽ mất Combo.',
+  `<label>Thời gian chơi<select id="rs"><option value="60">60 giây</option><option value="90">90 giây</option><option value="120">120 giây</option><option value="0">Tùy chỉnh…</option></select></label><label id="cl" style="display:none">Số giây<input id="cs" type="number" min="10" max="900" value="45"></label>`);
+  $('#rs').onchange=()=>$('#cl').style.display=$('#rs').value==='0'?'block':'none';
+  $('#go').onclick=()=>{const s=+$('#rs').value||Math.max(10,Math.min(900,+$('#cs').value||45));reflexStart(s)};
+}
+function reflexStart(sec){
+  run={pool:shuffle(published()),p:0,score:0,combo:0,best:0,ok:0,bad:0,t0:Date.now(),end:Date.now()+sec*1000,sec,locked:false,done:false};
+  reflexNext();
+  T.iv(()=>{if(run.done)return;const left=Math.max(0,run.end-Date.now());const el=$('#rt');if(el){el.textContent=(left/1000).toFixed(1)+'s';$('#rb').style.width=(left/(run.sec*10))+'%'}
+    const sc=Math.floor(left/1000);if(left>0&&left<=5000&&sc!==run.lt){run.lt=sc;SFX.tick()}if(left<=0)reflexEnd()},100);
+}
+function reflexNext(){
+  if(run.done)return;if(run.p>=run.pool.length){run.pool=shuffle(published());run.p=0}
+  run.item=mkItems([run.pool[run.p++]])[0];run.qt=Date.now();run.locked=false;const it=run.item;
+  app.innerHTML=`<div class="panel"><div class="hud"><div>Điểm<b id="sc">${run.score}</b></div><div>Combo<b>${run.combo>1?'🔥 x'+run.combo:run.combo}</b></div><div>Đúng / Sai<b>${run.ok} / ${run.bad}</b></div><div>Còn lại<b id="rt">${Math.max(0,(run.end-Date.now())/1000).toFixed(1)}s</b></div></div><div class="bar"><i id="rb" style="width:${Math.max(0,(run.end-Date.now())/(run.sec*10))}%"></i></div><h2 class="qt">${esc(it.q.q)}</h2>${optsHTML(it)}</div>`;
+  const pick=k=>{if(run.locked||run.done)return;run.locked=true;const ok=k===it.ans,el=(Date.now()-run.qt)/1000;
+    $$('.opt').forEach((b,j)=>{b.disabled=true;if(j===it.ans)b.classList.add('ok');else if(j===k)b.classList.add('bad')});
+    if(ok){run.combo++;run.best=Math.max(run.best,run.combo);run.ok++;const bn=Math.max(0,5-Math.floor(el)),cb=Math.min(run.combo-1,5)*2,g=10+bn+cb;run.score+=g;SFX.ok();
+      const p=document.createElement('div');p.className='pop';p.textContent=`+${g}${bn?' ⚡'+bn:''}${cb?' 🔥'+cb:''}`;document.body.appendChild(p);setTimeout(()=>p.remove(),700)}
+    else{run.combo=0;run.bad++;SFX.bad()}
+    T.to(reflexNext,ok?600:1100)};
+  $$('.opt').forEach(b=>b.onclick=()=>pick(+b.dataset.k));
+  KEY=e=>{if('1234'.includes(e.key)&&e.key.length===1)pick(+e.key-1)};
+}
+function reflexEnd(){
+  if(run.done)return;run.done=true;T.clear();KEY=null;SFX.win();
+  addHist('Phản xạ',run.score,`${run.ok} đúng / ${run.bad} sai · combo cao nhất ${run.best}`,run.sec);
+  app.innerHTML=`<div class="panel"><h2>Hết giờ!</h2><div class="big">${run.score} điểm</div><p>${run.ok} đúng · ${run.bad} sai · combo cao nhất ${run.best} · ${whoLine()}</p><div class="row"><button class="btn pri" data-go="reflex">Chơi lại</button><button class="btn ghost" data-go="home">Trang chủ</button></div></div>`;
+}
+
+/* ====================== 4. ĐỐI KHÁNG ====================== */
+function viewVersus(){
+  const pub=published();
+  setupShell('🏆 Đối kháng 2 người / 2 đội','Đội 1 nhấn phím A, Đội 2 nhấn phím L để giành quyền. Người giành quyền chọn đáp án bằng phím 1–4.',
+  `<div class="grid2"><label>Tên đội 1<input id="t0" value="Đội 1"></label><label>Tên đội 2<input id="t1" value="Đội 2"></label>
+   <label>Số câu<select id="vn">${cntOpts([5,10,15,20],pub.length)}</select></label><label>Thời gian trả lời<select id="vs"><option value="8">8 giây</option><option value="10" selected>10 giây</option><option value="15">15 giây</option></select></label>
+   <label>Điểm khi đúng<input id="vp" type="number" value="10" min="1"></label><label>Điểm trừ khi sai<input id="vm" type="number" value="5" min="0"></label></div>`);
+  $('#go').onclick=()=>{const g=id=>$('#'+id).value;
+    run={names:[g('t0').trim()||'Đội 1',g('t1').trim()||'Đội 2'],items:mkItems(shuffle(pub).slice(0,+g('vn'))),i:0,sc:[0,0],ph:'wait',tried:[false,false],elim:[],turn:null,sec:+g('vs'),pos:+g('vp')||10,neg:Math.max(0,+g('vm')||0),t0:Date.now(),msg:''};versusShow()};
+}
+function versusShow(){
+  T.clear();const it=run.items[run.i],n=run.items.length,r=run;
+  const msg={wait:'Giành quyền trả lời: '+(!r.tried[0]?r.names[0]+' nhấn A':'')+(!r.tried[0]&&!r.tried[1]?'  •  ':'')+(!r.tried[1]?r.names[1]+' nhấn L':''),answer:`${r.names[r.turn]} đang trả lời — nhấn phím 1–4 (còn <b id="vt">${r.sec}</b> giây)`,reveal:r.msg}[r.ph];
+  app.innerHTML=`<div class="teams">${[0,1].map(t=>`<div class="team t${t} ${r.turn===t&&r.ph==='answer'?'act':''} ${r.tried[t]&&r.ph==='wait'?'dim':''}"><div class="nm">${esc(r.names[t])}</div><div class="pt">${r.sc[t]}</div><div class="key">Phím ${t?'L':'A'}</div></div>`).join('')}</div>
+  <div class="panel"><div class="qtop"><span>Câu ${r.i+1}/${n}</span><span>+${r.pos} / −${r.neg}</span></div><h2 class="qt">${esc(it.q.q)}</h2>
+  ${optsHTML(it,k=>(r.elim.includes(k)?'out ':'')+(r.ph==='reveal'&&k===it.ans?'ok':''))}
+  <div class="fb ${r.ph==='reveal'?(r.good?'ok':'bad'):''}" style="margin-top:16px"><b>${msg}</b>${r.ph==='reveal'&&it.q.exp?`<p style="margin:6px 0 0">${esc(it.q.exp)}</p>`:''}</div>
+  <div class="row">${r.ph==='wait'?[0,1].map(t=>`<button class="btn" data-b="${t}" ${r.tried[t]?'disabled':''}>${esc(r.names[t])} giành quyền</button>`).join('')+'<button class="btn ghost" id="sk">Bỏ qua câu</button>':''}${r.ph==='reveal'?`<button class="btn pri" id="nx">${r.i+1<n?'Câu tiếp (Enter)':'Kết thúc (Enter)'}</button>`:''}<button class="btn ghost" id="qt">Kết thúc sớm</button></div></div>`;
+  const buzz=t=>{if(r.ph!=='wait'||r.tried[t])return;r.ph='answer';r.turn=t;SFX.buzz();versusShow()};
+  const reveal=(ok,m)=>{r.ph='reveal';r.good=ok;r.msg=m;versusShow()};
+  const wrong=(k)=>{const t=r.turn;r.sc[t]-=r.neg;r.tried[t]=true;SFX.bad();if(k!=null)r.elim.push(k);
+    if(r.tried[0]&&r.tried[1])reveal(false,`Cả hai đội chưa đúng. Đáp án: ${'ABCD'[it.ans]}. ${it.opts[it.ans]}`);else{r.ph='wait';r.turn=null;versusShow()}};
+  const answer=k=>{if(r.ph!=='answer'||r.elim.includes(k))return;
+    if(k===it.ans){r.sc[r.turn]+=r.pos;SFX.ok();reveal(true,`${r.names[r.turn]} trả lời đúng! +${r.pos} điểm.`)}else wrong(k)};
+  const nx=()=>{r.i++;if(r.i>=n)return versusEnd();Object.assign(r,{ph:'wait',tried:[false,false],elim:[],turn:null,msg:''});versusShow()};
+  $$('[data-b]').forEach(b=>b.onclick=()=>buzz(+b.dataset.b));
+  $$('.opt').forEach(b=>b.onclick=()=>answer(+b.dataset.k));
+  if($('#sk'))$('#sk').onclick=()=>reveal(false,`Bỏ qua. Đáp án: ${'ABCD'[it.ans]}. ${it.opts[it.ans]}`);
+  if($('#nx'))$('#nx').onclick=nx;
+  $('#qt').onclick=async()=>{if(await ask('Kết thúc trận đấu và xem kết quả?'))versusEnd()};
+  KEY=e=>{const k=e.key.toLowerCase();
+    if(r.ph==='wait'){if(k==='a')buzz(0);else if(k==='l')buzz(1)}
+    else if(r.ph==='answer'){if('1234'.includes(k)&&k.length===1)answer(+k-1)}
+    else if(r.ph==='reveal'&&(k==='enter'||k===' ')){e.preventDefault();nx()}};
+  if(r.ph==='answer'){r.dead=Date.now()+r.sec*1000;T.iv(()=>{const left=Math.ceil((r.dead-Date.now())/1000),el=$('#vt');if(el)el.textContent=Math.max(0,left);if(left<=0){wrong(null)}},200)}
+}
+function versusEnd(){
+  T.clear();KEY=null;const r=run,[a,b]=r.sc,res=a===b?'Hòa':(a>b?r.names[0]:r.names[1])+' thắng';SFX.win();
+  addHist('Đối kháng',`${a} - ${b}`,res,(Date.now()-r.t0)/1000,`${r.names[0]} vs ${r.names[1]}`,'');
+  app.innerHTML=`<div class="teams">${[0,1].map(t=>`<div class="team t${t} ${(t?b>a:a>b)?'act':''}"><div class="nm">${esc(r.names[t])}</div><div class="pt">${r.sc[t]}</div></div>`).join('')}</div><div class="panel"><h2>${a===b?'🤝 Hai đội hòa nhau!':'🏆 '+esc(res)+'!'}</h2><div class="row"><button class="btn pri" data-go="versus">Trận mới</button><button class="btn ghost" data-go="home">Trang chủ</button></div></div>`;
+}
+
+/* ====================== ADMIN STUDIO ====================== */
+function viewAdmin(tab){
+  if(tab)adminTab=tab;
+  if(cfg.pinHash&&sessionStorage.getItem('eduapp.admin')!=='1'){
+    app.innerHTML=`<div class="panel narrow"><h2>🔒 Admin Studio</h2><p class="mut">Nhập PIN để vào khu vực quản trị.</p><label>PIN<input id="pin" type="password" inputmode="numeric" autocomplete="off"></label><div class="row"><button class="btn pri" id="go">Vào Admin</button><button class="btn ghost" data-go="home">Quay lại</button></div><p class="mut small">PIN chỉ là lớp bảo vệ cục bộ trên trình duyệt, không thay thế hệ thống đăng nhập máy chủ.</p></div>`;
+    const t=()=>{if(hash('eduapp:'+$('#pin').value)===cfg.pinHash){sessionStorage.setItem('eduapp.admin','1');viewAdmin()}else{toast('PIN không đúng.',true);$('#pin').value=''}};
+    $('#go').onclick=t;$('#pin').onkeydown=e=>{if(e.key==='Enter')t()};$('#pin').focus();return;
+  }
+  const tabs=[['cfg','⚙️ Cấu hình App'],['ai','📚 Học liệu & AI'],['bank','🧠 Ngân hàng câu hỏi'],['hist','📊 Lịch sử'],['sys','💾 Hệ thống']];
+  app.innerHTML=`<h2>Admin Studio</h2><div class="tabs">${tabs.map(t=>`<button data-t="${t[0]}" class="${t[0]===adminTab?'on':''}">${t[1]}</button>`).join('')}</div><div id="adm"></div>`;
+  $$('.tabs button').forEach(b=>b.onclick=()=>{adminTab=b.dataset.t;viewAdmin()});
+  ({cfg:admCfg,ai:admAI,bank:admBank,hist:admHist,sys:admSys})[adminTab]();
+}
+
+/* ---- Cấu hình ---- */
+function resizeLogo(file){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const m=220,s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));const x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);let d=c.toDataURL('image/png');if(d.length>150000){x.globalCompositeOperation='destination-over';x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);d=c.toDataURL('image/jpeg',.82)}res(d)};im.onerror=()=>{URL.revokeObjectURL(u);rej(new Error('Không đọc được ảnh'))};im.src=u})}
+function admCfg(){
+  let logo=cfg.logo;
+  $('#adm').innerHTML=`<div class="card"><h3>Nhận diện App</h3>
+  <div class="grid2"><label>Tên App / tên cuộc thi<input id="c_title" value="${esc(cfg.title)}"></label><label>Dòng nhãn phía trên<input id="c_tag" value="${esc(cfg.tag)}"></label>
+  <label>Tên trường / đơn vị tổ chức<input id="c_org" value="${esc(cfg.org)}"></label><label>Màu chủ đạo<input id="c_color" type="color" value="${esc(cfg.color)}"></label></div>
+  <label>Mô tả ngắn<textarea id="c_desc">${esc(cfg.desc)}</textarea></label>
+  <label>Thông tin hiển thị cho học sinh (tùy chọn)<textarea id="c_info" placeholder="Ví dụ: Thể lệ, thời gian thi, lưu ý…">${esc(cfg.info)}</textarea></label>
+  <label>Logo (tự động thu nhỏ trước khi lưu)<input id="c_logo" type="file" accept="image/*"></label>
+  <div id="lp">${logo?`<img class="logo-prev" src="${logo}" alt="">`:''}</div>
+  <p class="mut small">Ví dụ đổi tên: "RUNG CHUÔNG VÀNG – LỊCH SỬ VIỆT NAM", "THỬ THÁCH TIẾNG ANH LỚP 9", "ÔN TẬP KHOA HỌC – CUỐI HỌC KỲ".</p>
+  <div class="row"><button class="btn pri" id="c_save">Lưu cấu hình</button><button class="btn ghost" id="c_rl">Xóa logo</button></div></div>
+  <div class="card" style="margin-top:16px"><h3>PIN Admin</h3><p class="mut small">${cfg.pinHash?'Đang bật PIN.':'Chưa đặt PIN.'} Đây là lớp bảo vệ cục bộ trên trình duyệt, không thay thế hệ thống đăng nhập máy chủ.</p>
+  <div class="tool"><label>PIN mới<input id="p_new" type="password" inputmode="numeric" autocomplete="new-password"></label><button class="btn pri" id="p_set">Đặt PIN</button><button class="btn ghost" id="p_del" ${cfg.pinHash?'':'disabled'}>Xóa PIN</button></div></div>`;
+  $('#c_logo').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{logo=await resizeLogo(f);$('#lp').innerHTML=`<img class="logo-prev" src="${logo}" alt="">`}catch(x){toast(x.message,true)}};
+  $('#c_rl').onclick=()=>{logo='';$('#lp').innerHTML='<span class="mut small">Đã gỡ logo (nhấn Lưu để áp dụng).</span>'};
+  const persist=(next,okMsg)=>{ // lưu → đọc lại → xác minh → cập nhật giao diện → thông báo
+    if(!LS.set(K.cfg,next)){toast('LƯU THẤT BẠI: bộ nhớ trình duyệt đầy hoặc bị chặn. Thử logo nhỏ hơn.',true);return false}
+    const back=LS.get(K.cfg,null);if(!back||back.title!==next.title||back.logo!==next.logo||back.pinHash!==next.pinHash){toast('Đã ghi nhưng đọc lại không khớp. Cấu hình có thể chưa được lưu.',true);return false}
+    cfg={...DEF_CFG,...back};applyTheme();renderHeader();toast(okMsg);return true};
+  $('#c_save').onclick=()=>{const t=$('#c_title').value.trim();if(!t)return toast('Tên App không được để trống.',true);
+    if(persist({...cfg,title:t,tag:$('#c_tag').value.trim(),org:$('#c_org').value.trim(),color:$('#c_color').value,desc:$('#c_desc').value.trim(),info:$('#c_info').value.trim(),logo},'Đã lưu và xác minh cấu hình.'))admCfg()};
+  $('#p_set').onclick=()=>{const p=$('#p_new').value;if(p.length<4)return toast('PIN cần ít nhất 4 ký tự.',true);if(persist({...cfg,pinHash:hash('eduapp:'+p)},'Đã đặt PIN.')){sessionStorage.setItem('eduapp.admin','1');admCfg()}};
+  $('#p_del').onclick=()=>{if(persist({...cfg,pinHash:''},'Đã xóa PIN.'))admCfg()};
+}
+
+/* ---- Gemini ---- */
+async function callGemini(parts,{json=true,tools}={}){
+  const key=sessionStorage.getItem('eduapp.gkey');if(!key)throw new Error('Chưa nhập Gemini API Key.');
+  const body={contents:[{role:'user',parts}],generationConfig:{temperature:.5}};
+  if(json&&!tools)body.generationConfig.responseMimeType='application/json';
+  if(tools)body.tools=tools;
+  let r;try{r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(cfg.model||'gemini-2.0-flash')}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify(body)})}catch(e){throw new Error('Không kết nối được tới Gemini. Kiểm tra mạng Internet.')}
+  const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error?.message||'Lỗi HTTP '+r.status);
+  const t=(j.candidates?.[0]?.content?.parts||[]).map(p=>p.text||'').join('');if(!t)throw new Error('AI không trả về nội dung (có thể bị chặn bởi bộ lọc an toàn).');return t;
+}
+const b64=blob=>new Promise((res,rej)=>{const f=new FileReader();f.onload=()=>res(String(f.result).split(',')[1]);f.onerror=()=>rej(f.error);f.readAsDataURL(blob)});
+async function zipOpen(buf){const dv=new DataView(buf),u8=new Uint8Array(buf);let e=u8.length-22;while(e>=0&&dv.getUint32(e,true)!==0x06054b50)e--;if(e<0)throw new Error('Không phải file zip hợp lệ');
+  const n=dv.getUint16(e+10,true);let p=dv.getUint32(e+16,true);const out={};
+  for(let i=0;i<n&&dv.getUint32(p,true)===0x02014b50;i++){const nl=dv.getUint16(p+28,true),el=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true);out[new TextDecoder().decode(u8.subarray(p+46,p+46+nl))]={m:dv.getUint16(p+10,true),cs:dv.getUint32(p+20,true),off:dv.getUint32(p+42,true)};p+=46+nl+el+cl}
+  return{out,dv,u8}}
+async function zipRead(z,name){const m=z.out[name],o=m.off,nl=z.dv.getUint16(o+26,true),el=z.dv.getUint16(o+28,true),d=z.u8.subarray(o+30+nl+el,o+30+nl+el+m.cs);
+  if(m.m===0)return new TextDecoder().decode(d);if(!window.DecompressionStream)throw new Error('Trình duyệt không hỗ trợ giải nén (cần Chrome/Edge/Firefox mới)');
+  return new Response(new Blob([d]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text()}
+const xmlText=x=>x.replace(/<\/(w|a):p>/g,'\n').replace(/<[^>]+>/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&amp;/g,'&');
+async function extractOffice(file){const z=await zipOpen(await file.arrayBuffer());
+  if(/\.docx$/i.test(file.name))return xmlText(await zipRead(z,'word/document.xml'));
+  const sl=Object.keys(z.out).filter(n=>/^ppt\/slides\/slide\d+\.xml$/.test(n)).sort((a,b)=>parseInt(a.match(/\d+/)[0])-parseInt(b.match(/\d+/)[0]));
+  let t='';for(const n of sl)t+=`\n[Slide ${n.match(/\d+/)[0]}]\n`+xmlText(await zipRead(z,n));return t}
+async function addFiles(files){
+  for(const f of files){const ext=(f.name.split('.').pop()||'').toLowerCase();const m={id:uid(),name:f.name,added:Date.now(),size:f.size,type:ext};
+    try{
+      if(['txt','md','csv','json'].includes(ext)){m.kind='text';m.text=await f.text()}
+      else if(['docx','pptx'].includes(ext)){m.kind='text';m.text=await extractOffice(f);if(!m.text.trim())throw new Error('Không trích được nội dung')}
+      else if(ext==='pdf'||f.type.startsWith('image/')){if(f.size>18e6)throw new Error('File quá lớn (tối đa ~18MB để gửi AI)');m.kind='blob';m.blob=f;m.mime=ext==='pdf'?'application/pdf':f.type}
+      else throw new Error('Định dạng .'+ext+' chưa được hỗ trợ');
+      await DB.put(m);toast('Đã thêm: '+f.name);
+    }catch(e){toast(f.name+': '+e.message,true)}}
+  refreshMats();
+}
+async function refreshMats(){
+  const box=$('#mats');if(!box)return;let ms=[];try{ms=await DB.all()}catch(e){box.innerHTML='<p class="bad-t">Không mở được IndexedDB trên trình duyệt này.</p>';return}
+  ms.sort((a,b)=>b.added-a.added);
+  box.innerHTML=ms.length?ms.map(m=>`<div class="chk"><input type="checkbox" class="mchk" value="${m.id}" id="m${m.id}"><label for="m${m.id}" style="margin:0;flex:1">${esc(m.name)} <span class="badge">${esc(m.kind==='url'?(m.yt?'YouTube':'URL'):m.type||m.kind)}</span> <span class="mut small">${m.size?Math.round(m.size/1024)+' KB':''}</span></label><button class="btn sm" data-d="${m.id}">Xóa</button></div>`).join(''):'<p class="mut">Chưa có học liệu. Hãy thêm tệp, liên kết hoặc dán văn bản ở trên.</p>';
+  $$('[data-d]',box).forEach(b=>b.onclick=async()=>{if(await ask('Xóa học liệu này?',{danger:true,ok:'Xóa'})){await DB.del(b.dataset.d);refreshMats()}});
+}
+function admAI(){
+  const has=!!sessionStorage.getItem('eduapp.gkey');
+  $('#adm').innerHTML=`<div class="card"><h3>Gemini API</h3><p class="mut small">API Key không ghi vào file HTML, không đưa vào Backup, chỉ lưu trong phiên làm việc của trình duyệt (đóng tab là mất).</p>
+  <div class="grid2"><label>Gemini API Key<input id="g_key" type="password" autocomplete="off" placeholder="${has?'Đã nhập trong phiên này':'Dán API Key'}"></label><label>Model<input id="g_model" list="g_ml" value="${esc(cfg.model)}"><datalist id="g_ml"><option>gemini-2.0-flash</option><option>gemini-2.5-flash</option><option>gemini-2.5-pro</option></datalist></label></div>
+  <div class="row"><button class="btn pri" id="g_save">Lưu cho phiên này</button><button class="btn" id="g_test">Kiểm tra API</button><span id="g_st" class="small ${has?'ok-t':'mut'}">${has?'Đã có key trong phiên.':'Chưa có key.'}</span></div></div>
+  <div class="card" style="margin-top:16px"><h3>Trung tâm học liệu</h3><p class="mut small">Hỗ trợ TXT, MD, CSV, JSON, DOCX, PPTX (đọc nội dung trực tiếp), PDF và hình ảnh (gửi nguyên bản cho Gemini), URL website/tài liệu và YouTube. Học liệu lưu trong IndexedDB của trình duyệt.</p>
+  <label>Thêm tệp<input id="m_file" type="file" multiple accept=".txt,.md,.csv,.json,.pdf,.docx,.pptx,image/*"></label>
+  <div class="tool"><label>Thêm URL (website, tài liệu hoặc YouTube)<input id="m_url" placeholder="https://…"></label><button class="btn" id="m_ua">Thêm URL</button></div>
+  <label>Hoặc dán văn bản<textarea id="m_txt" placeholder="Tên ghi chú nằm ở dòng đầu tiên, nội dung ở các dòng sau"></textarea></label><div class="row"><button class="btn" id="m_ta">Thêm văn bản</button></div>
+  <h3 style="margin-top:18px">Danh sách học liệu</h3><div id="mats"></div></div>
+  <div class="card" style="margin-top:16px"><h3>AI Question Generator</h3>
+  <p class="mut small">Chọn học liệu ở danh sách trên. Câu hỏi AI tạo ra luôn ở trạng thái <b>Bản nháp</b>, chờ giáo viên kiểm duyệt.</p>
+  <div class="grid2"><label>Số lượng câu<select id="a_n"><option>10</option><option selected>20</option><option>30</option><option>50</option><option value="0">Tùy chỉnh…</option></select></label><label id="a_cl" style="display:none">Số câu tùy chỉnh<input id="a_c" type="number" min="1" max="100" value="15"></label></div>
+  <div class="grid2" style="grid-template-columns:repeat(3,1fr)"><label>% Dễ<input id="a_e" type="number" min="0" max="100" value="40"></label><label>% Trung bình<input id="a_m" type="number" min="0" max="100" value="40"></label><label>% Khó<input id="a_h" type="number" min="0" max="100" value="20"></label></div>
+  <label>Yêu cầu bổ sung<textarea id="a_x" placeholder="Ví dụ: tập trung vào các mốc thời gian; dùng ngôn ngữ phù hợp học sinh lớp 9…"></textarea></label>
+  <div class="row"><button class="btn pri" id="a_go">Gửi sang Gemini & tạo bản nháp</button><span id="a_st" class="small mut"></span></div></div>`;
+  refreshMats();
+  $('#g_save').onclick=()=>{const k=$('#g_key').value.trim();if(k)sessionStorage.setItem('eduapp.gkey',k);const m=$('#g_model').value.trim()||'gemini-2.0-flash';LS.set(K.cfg,{...cfg,model:m});cfg.model=m;$('#g_key').value='';$('#g_st').textContent=sessionStorage.getItem('eduapp.gkey')?'Đã có key trong phiên.':'Chưa có key.';$('#g_st').className='small '+(sessionStorage.getItem('eduapp.gkey')?'ok-t':'mut');toast('Đã lưu model và key (phiên này).')};
+  $('#g_test').onclick=async()=>{$('#g_st').textContent='Đang kiểm tra…';try{const k=$('#g_key').value.trim();if(k)sessionStorage.setItem('eduapp.gkey',k);cfg.model=$('#g_model').value.trim()||cfg.model;await callGemini([{text:'Trả lời đúng một từ: OK'}],{json:false});$('#g_st').textContent='API hoạt động tốt ✔';$('#g_st').className='small ok-t'}catch(e){$('#g_st').textContent='Lỗi: '+e.message;$('#g_st').className='small bad-t'}};
+  $('#m_file').onchange=e=>{addFiles([...e.target.files]);e.target.value=''};
+  $('#m_ua').onclick=async()=>{const u=$('#m_url').value.trim();if(!/^https?:\/\//i.test(u))return toast('URL phải bắt đầu bằng http:// hoặc https://',true);await DB.put({id:uid(),name:u,added:Date.now(),kind:'url',url:u,yt:/youtube\.com|youtu\.be/i.test(u)});$('#m_url').value='';refreshMats()};
+  $('#m_ta').onclick=async()=>{const t=$('#m_txt').value.trim();if(!t)return toast('Chưa có nội dung.',true);const nm=t.split('\n')[0].slice(0,60);await DB.put({id:uid(),name:nm,added:Date.now(),kind:'text',type:'ghi chú',text:t,size:t.length});$('#m_txt').value='';refreshMats()};
+  $('#a_n').onchange=()=>$('#a_cl').style.display=$('#a_n').value==='0'?'block':'none';
+  $('#a_go').onclick=aiGenerate;
+}
+async function aiGenerate(){
+  const st=$('#a_st'),ids=$$('.mchk:checked').map(c=>c.value);if(!ids.length)return toast('Hãy chọn ít nhất một học liệu.',true);
+  let n=+$('#a_n').value||+$('#a_c').value||10;n=Math.max(1,Math.min(100,n));
+  let e=+$('#a_e').value||0,m=+$('#a_m').value||0,h=+$('#a_h').value||0;const sum=e+m+h;if(sum<=0)return toast('Tỷ lệ độ khó không hợp lệ.',true);
+  let ne=Math.round(n*e/sum),nm=Math.round(n*m/sum),nh=n-ne-nm;if(nh<0){nh=0;nm=n-ne}
+  try{
+    st.textContent='Đang chuẩn bị học liệu…';const all=await DB.all(),sel=ids.map(i=>all.find(x=>x.id===i)).filter(Boolean);
+    const parts=[];let txt='',hasUrl=false;
+    for(const x of sel){if(x.kind==='text')txt+=`\n=== ${x.name} ===\n${x.text}\n`;
+      else if(x.kind==='blob')parts.push({inline_data:{mime_type:x.mime,data:await b64(x.blob)}});
+      else if(x.yt)parts.push({file_data:{file_uri:x.url}});
+      else{hasUrl=true;txt+=`\nTài liệu trực tuyến cần đọc: ${x.url}\n`}}
+    if(txt.length>60000)txt=txt.slice(0,60000)+'\n[…đã cắt bớt]';
+    const prompt=`Bạn là giáo viên giàu kinh nghiệm. Dựa HOÀN TOÀN vào học liệu được cung cấp, hãy soạn ${n} câu hỏi trắc nghiệm 4 lựa chọn bằng tiếng Việt, gồm ${ne} câu Dễ, ${nm} câu Trung bình, ${nh} câu Khó. Chỉ hỏi những điều có trong học liệu, không bịa. Mỗi câu chỉ có đúng một đáp án đúng; vị trí đáp án đúng phân bố ngẫu nhiên; các phương án nhiễu phải hợp lý.${$('#a_x').value.trim()?'\nYêu cầu bổ sung: '+$('#a_x').value.trim():''}
+Chỉ trả về MỘT mảng JSON (không thêm lời giải thích, không dùng Markdown), mỗi phần tử có dạng:
+{"question":"...","A":"...","B":"...","C":"...","D":"...","answer":"A|B|C|D","explanation":"giải thích ngắn","level":"easy|medium|hard","topic":"chủ đề ngắn"}
+${txt?'\nHỌC LIỆU:\n'+txt:''}`;
+    parts.push({text:prompt});st.textContent='Gemini đang soạn câu hỏi… (có thể mất 10–60 giây)';
+    const out=await callGemini(parts,{json:true,tools:hasUrl?[{url_context:{}}]:undefined});
+    const a=out.indexOf('['),b=out.lastIndexOf(']');if(a<0||b<0)throw new Error('AI trả về định dạng không đọc được. Hãy thử lại.');
+    const arr=JSON.parse(out.slice(a,b+1)),src='AI: '+sel.map(x=>x.name).join(', ').slice(0,80);
+    const qs=arr.map(o=>normQ(o,{st:'draft',src})).filter(Boolean);if(!qs.length)throw new Error('Không có câu hỏi hợp lệ trong phản hồi.');
+    bank.push(...qs);saveBank();st.textContent='';toast(`Đã tạo ${qs.length} câu (bản nháp). Hãy kiểm duyệt trong Ngân hàng câu hỏi.`);
+    bf={q:'',lv:'',st:'draft',topic:''};adminTab='bank';viewAdmin();
+  }catch(err){st.textContent='';toast('Lỗi tạo câu hỏi: '+err.message,true)}
+}
+
+/* ---- Ngân hàng câu hỏi ---- */
+let bf={q:'',lv:'',st:'',topic:''},bsel=new Set();
+function normLv(v){v=String(v||'').toLowerCase().trim();if(/^(d|dễ|de|easy|1)$/.test(v))return'easy';if(/^(k|khó|kho|hard|3)$/.test(v))return'hard';return'medium'}
+function normQ(o,def={}){
+  if(!o||typeof o!=='object')return null;const g=(...ks)=>{for(const k of ks)if(o[k]!=null&&o[k]!=='')return o[k];return''};
+  const q=String(g('question','q','cauhoi','Câu hỏi')).trim();
+  let opts=Array.isArray(o.options)?o.options:Array.isArray(o.o)?o.o:[g('A','a','dap_an_a'),g('B','b','dap_an_b'),g('C','c','dap_an_c'),g('D','d','dap_an_d')];
+  opts=opts.slice(0,4).map(x=>String(x??'').trim());while(opts.length<4)opts.push('');
+  let a=g('answer','a_correct','correct','dapan','Đáp án đúng');if(a===''&&typeof o.a==='number')a=o.a;
+  let ai=-1;if(typeof a==='number')ai=a>=0&&a<=3?a:-1;else{const s=String(a).trim().toUpperCase();ai='ABCD'.indexOf(s[0]||'');if(s.length>1||ai<0){if(/^[1-4]$/.test(s))ai=+s-1}}
+  if(!q||opts.some(x=>!x)||ai<0)return null;
+  const stv=String(g('status','st')||def.st||'draft').toLowerCase();
+  return{id:uid(),q,o:opts,a:ai,exp:String(g('explanation','exp','giaithich','Giải thích')).trim(),lv:normLv(g('level','lv','Mức độ')),topic:String(g('topic','Chủ đề')).trim(),src:String(g('source','src','Nguồn')||def.src||'').trim(),st:/pub|xuất|xuat|đã/.test(stv)?'published':'draft'};
+}
+function parseCSV(t){t=t.replace(/^\uFEFF/,'');const first=t.split('\n')[0],d=(first.split(';').length>first.split(',').length)?';':',';const rows=[];let r=[],f='',q=false;
+  for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c==='"'){if(t[i+1]==='"'){f+='"';i++}else q=false}else f+=c}
+    else if(c==='"')q=true;else if(c===d){r.push(f);f=''}else if(c==='\n'||c==='\r'){if(c==='\r'&&t[i+1]==='\n')i++;r.push(f);f='';if(r.some(x=>x.trim()))rows.push(r);r=[]}else f+=c}
+  if(f||r.length){r.push(f);if(r.some(x=>x.trim()))rows.push(r)}return rows}
+const csvCell=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+const toCSV=(head,rows)=>'\uFEFF'+[head,...rows].map(r=>r.map(csvCell).join(',')).join('\r\n');
+const flat=q=>({question:q.q,A:q.o[0],B:q.o[1],C:q.o[2],D:q.o[3],answer:'ABCD'[q.a],explanation:q.exp,level:LV[q.lv],topic:q.topic,source:q.src,status:q.st==='published'?'published':'draft'});
+function filtered(){const s=bf.q.toLowerCase();return bank.filter(q=>(!s||(q.q+' '+q.o.join(' ')+' '+q.topic).toLowerCase().includes(s))&&(!bf.lv||q.lv===bf.lv)&&(!bf.st||q.st===bf.st)&&(!bf.topic||q.topic===bf.topic))}
+function admBank(){
+  const tps=[...new Set(bank.map(q=>q.topic).filter(Boolean))],nd=bank.filter(q=>q.st==='draft').length;
+  $('#adm').innerHTML=`<div class="card"><div class="tool"><label>Tìm kiếm<input id="f_q" value="${esc(bf.q)}" placeholder="Nội dung câu hỏi…"></label>
+  <label>Mức độ<select id="f_l"><option value="">Tất cả</option>${Object.entries(LV).map(([k,v])=>`<option value="${k}" ${bf.lv===k?'selected':''}>${v}</option>`).join('')}</select></label>
+  <label>Trạng thái<select id="f_s"><option value="">Tất cả</option><option value="published" ${bf.st==='published'?'selected':''}>Đã xuất bản</option><option value="draft" ${bf.st==='draft'?'selected':''}>Bản nháp</option></select></label>
+  <label>Chủ đề<select id="f_t"><option value="">Tất cả</option>${tps.map(t=>`<option ${bf.topic===t?'selected':''}>${esc(t)}</option>`).join('')}</select></label></div>
+  <div class="row"><button class="btn pri" id="b_new">＋ Thêm câu hỏi</button><button class="btn" id="b_imp">Import JSON/CSV</button><button class="btn" id="b_ej">Export JSON</button><button class="btn" id="b_ec">Export CSV</button><button class="btn ghost" id="b_def">Khôi phục 50 câu mặc định</button><input type="file" id="b_file" accept=".json,.csv" hidden></div>
+  <p class="mut small">Tổng ${bank.length} câu · ${bank.length-nd} đã xuất bản · ${nd} bản nháp. Chỉ câu <b>đã xuất bản</b> mới xuất hiện cho học sinh. CSV cần cột: question, A, B, C, D, answer (A–D), explanation, level, topic, source, status.</p></div>
+  <div class="row" id="bulk"></div><div class="tw" id="btb"></div>`;
+  const rd=()=>{bf={q:$('#f_q').value,lv:$('#f_l').value,st:$('#f_s').value,topic:$('#f_t').value};drawBank()};
+  $('#f_q').oninput=rd;['f_l','f_s','f_t'].forEach(i=>$('#'+i).onchange=rd);
+  $('#b_new').onclick=()=>openEditor();
+  $('#b_imp').onclick=()=>$('#b_file').click();
+  $('#b_file').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{const t=await f.text();let items;
+      if(/\.csv$/i.test(f.name)){const rows=parseCSV(t),h=rows[0].map(x=>x.trim());items=rows.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k,r[i]])))}
+      else{const j=JSON.parse(t);items=Array.isArray(j)?j:(j.bank||j.questions||[])}
+      const qs=items.map(o=>normQ(o,{st:'draft'})).filter(Boolean);if(!qs.length)throw new Error('Không có câu hỏi hợp lệ.');
+      bank.push(...qs);saveBank();toast(`Đã nhập ${qs.length}/${items.length} câu hợp lệ.`);admBank()}catch(x){toast('Import lỗi: '+x.message,true)}};
+  $('#b_ej').onclick=()=>download(`ngan-hang-cau-hoi-${stamp()}.json`,JSON.stringify(bank.map(flat),null,2));
+  $('#b_ec').onclick=()=>download(`ngan-hang-cau-hoi-${stamp()}.csv`,toCSV(['question','A','B','C','D','answer','explanation','level','topic','source','status'],bank.map(q=>Object.values(flat(q)))),'text/csv');
+  $('#b_def').onclick=async()=>{if(await ask('Khôi phục 50 câu hỏi Nguyễn Văn Trỗi? Các câu mặc định đã sửa sẽ bị ghi đè; câu hỏi khác của bạn được giữ nguyên.')){bank=bank.filter(q=>!/^nvt-/.test(q.id)).concat(defaultBank());saveBank();toast('Đã khôi phục 50 câu mặc định.');admBank()}};
+  drawBank();
+}
+function drawBank(){
+  const L=filtered(),show=L.slice(0,150);
+  $('#btb').innerHTML=`<table><thead><tr><th><input type="checkbox" id="ca" title="Chọn tất cả"></th><th>#</th><th>Câu hỏi</th><th>Đ.án</th><th>Mức độ</th><th>Chủ đề</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody>${show.map((q,i)=>`<tr><td><input type="checkbox" class="rc" value="${q.id}" ${bsel.has(q.id)?'checked':''}></td><td>${i+1}</td><td style="min-width:280px">${esc(q.q)}</td><td>${'ABCD'[q.a]}</td><td>${LV[q.lv]}</td><td>${esc(q.topic)}</td><td><span class="badge ${q.st==='published'?'pub':'dr'}">${q.st==='published'?'Đã xuất bản':'Bản nháp'}</span></td><td style="white-space:nowrap"><button class="btn sm" data-e="${q.id}">Sửa</button> <button class="btn sm" data-c="${q.id}">Nhân bản</button> <button class="btn sm" data-p="${q.id}">${q.st==='published'?'Về nháp':'Xuất bản'}</button> <button class="btn sm" data-x="${q.id}">Xóa</button></td></tr>`).join('')||'<tr><td colspan="8" class="mut">Không có câu hỏi phù hợp.</td></tr>'}</tbody></table>${L.length>150?`<p class="mut small" style="padding:0 10px">Hiển thị 150/${L.length} câu. Dùng bộ lọc để thu hẹp.</p>`:''}`;
+  const bulk=()=>{const n=bsel.size;$('#bulk').innerHTML=n?`<b>Đã chọn ${n}</b> <button class="btn sm" id="k_p">Xuất bản</button><button class="btn sm" id="k_d">Chuyển về nháp</button><button class="btn sm danger" id="k_x">Xóa</button>`:'';if(!n)return;
+    $('#k_p').onclick=()=>{bank.forEach(q=>{if(bsel.has(q.id))q.st='published'});saveBank();bsel.clear();admBank()};
+    $('#k_d').onclick=()=>{bank.forEach(q=>{if(bsel.has(q.id))q.st='draft'});saveBank();bsel.clear();admBank()};
+    $('#k_x').onclick=async()=>{if(await ask(`Xóa ${bsel.size} câu hỏi đã chọn?`,{danger:true,ok:'Xóa'})){bank=bank.filter(q=>!bsel.has(q.id));saveBank();bsel.clear();admBank()}}};
+  $$('.rc').forEach(c=>c.onchange=()=>{c.checked?bsel.add(c.value):bsel.delete(c.value);bulk()});
+  $('#ca').onchange=e=>{show.forEach(q=>e.target.checked?bsel.add(q.id):bsel.delete(q.id));$$('.rc').forEach(c=>c.checked=e.target.checked);bulk()};
+  const by=id=>bank.find(q=>q.id===id);
+  $$('[data-e]').forEach(b=>b.onclick=()=>openEditor(by(b.dataset.e)));
+  $$('[data-c]').forEach(b=>b.onclick=()=>{const q=by(b.dataset.c),c={...q,o:[...q.o],id:uid(),st:'draft',q:q.q+' (bản sao)'};bank.splice(bank.indexOf(q)+1,0,c);saveBank();admBank()});
+  $$('[data-p]').forEach(b=>b.onclick=()=>{const q=by(b.dataset.p);q.st=q.st==='published'?'draft':'published';saveBank();drawBank()});
+  $$('[data-x]').forEach(b=>b.onclick=async()=>{if(await ask('Xóa câu hỏi này?',{danger:true,ok:'Xóa'})){bank=bank.filter(q=>q.id!==b.dataset.x);bsel.delete(b.dataset.x);saveBank();admBank()}});
+  bulk();
+}
+function openEditor(q){
+  const isNew=!q;q=q||{id:uid(),q:'',o:['','','',''],a:0,exp:'',lv:'medium',topic:'',src:'',st:'draft'};
+  const d=$('#dlg'),tps=[...new Set(bank.map(x=>x.topic).filter(Boolean))];
+  d.innerHTML=`<div class="ed"><h3>${isNew?'Thêm câu hỏi':'Sửa câu hỏi'}</h3><label>Nội dung câu hỏi<textarea id="e_q">${esc(q.q)}</textarea></label>
+  ${[0,1,2,3].map(i=>`<label><input type="radio" name="e_a" value="${i}" ${q.a===i?'checked':''}> Đáp án ${'ABCD'[i]} <span class="mut small">(chọn nút tròn nếu là đáp án đúng)</span><input id="e_o${i}" value="${esc(q.o[i])}"></label>`).join('')}
+  <label>Giải thích<textarea id="e_x">${esc(q.exp)}</textarea></label>
+  <div class="grid2"><label>Mức độ<select id="e_l">${Object.entries(LV).map(([k,v])=>`<option value="${k}" ${q.lv===k?'selected':''}>${v}</option>`).join('')}</select></label>
+  <label>Trạng thái<select id="e_s"><option value="draft" ${q.st==='draft'?'selected':''}>Bản nháp</option><option value="published" ${q.st==='published'?'selected':''}>Đã xuất bản</option></select></label>
+  <label>Chủ đề<input id="e_t" list="e_tl" value="${esc(q.topic)}"><datalist id="e_tl">${tps.map(t=>`<option>${esc(t)}</option>`).join('')}</datalist></label><label>Nguồn<input id="e_r" value="${esc(q.src)}" placeholder="Giáo trình, Slide, PDF, Website, YouTube…"></label></div>
+  <div class="row end"><button class="btn ghost" id="e_c">Hủy</button><button class="btn pri" id="e_ok">Lưu câu hỏi</button></div></div>`;
+  $('#e_c').onclick=()=>d.close();
+  $('#e_ok').onclick=()=>{const o=[0,1,2,3].map(i=>$('#e_o'+i).value.trim()),t=$('#e_q').value.trim();
+    if(!t||o.some(x=>!x))return toast('Cần nhập câu hỏi và đủ 4 đáp án.',true);
+    const n={...q,q:t,o,a:+($('input[name=e_a]:checked')?.value??0),exp:$('#e_x').value.trim(),lv:$('#e_l').value,st:$('#e_s').value,topic:$('#e_t').value.trim(),src:$('#e_r').value.trim()};
+    if(isNew)bank.push(n);else bank[bank.findIndex(x=>x.id===q.id)]=n;
+    if(saveBank()){d.close();toast('Đã lưu câu hỏi.');admBank()}};
+  d.showModal();
+}
+
+/* ---- Lịch sử ---- */
+let hf={q:'',m:''},hsel=new Set();
+function admHist(){
+  $('#adm').innerHTML=`<div class="card"><div class="tool"><label>Tìm theo tên / lớp<input id="h_q" value="${esc(hf.q)}"></label><label>Chế độ<select id="h_m"><option value="">Tất cả</option>${['Tự học','Thi thử','Phản xạ','Đối kháng'].map(m=>`<option ${hf.m===m?'selected':''}>${m}</option>`).join('')}</select></label></div>
+  <div class="row"><button class="btn" id="h_csv">Export CSV</button><button class="btn" id="h_dsel">Xóa các lượt đã chọn</button><button class="btn danger" id="h_dall">Xóa toàn bộ lịch sử</button></div></div><div class="tw" id="htb"></div>`;
+  const draw=()=>{const s=hf.q.toLowerCase(),L=hist.filter(h=>(!s||(h.name+' '+h.cls).toLowerCase().includes(s))&&(!hf.m||h.mode===hf.m)).sort((a,b)=>b.ts-a.ts).slice(0,500);
+    $('#htb').innerHTML=`<table><thead><tr><th><input type="checkbox" id="hca"></th><th>Thời gian</th><th>Tên</th><th>Lớp</th><th>Chế độ</th><th>Điểm</th><th>Kết quả</th><th>Thời lượng</th></tr></thead><tbody>${L.map(h=>`<tr><td><input type="checkbox" class="hc" value="${h.id}" ${hsel.has(h.id)?'checked':''}></td><td>${new Date(h.ts).toLocaleString('vi-VN')}</td><td>${esc(h.name)}</td><td>${esc(h.cls)}</td><td>${esc(h.mode)}</td><td>${esc(h.score)}</td><td>${esc(h.result)}</td><td>${h.dur}s</td></tr>`).join('')||'<tr><td colspan="8" class="mut">Chưa có lượt chơi nào.</td></tr>'}</tbody></table>`;
+    $$('.hc').forEach(c=>c.onchange=()=>c.checked?hsel.add(c.value):hsel.delete(c.value));
+    $('#hca').onchange=e=>{L.forEach(h=>e.target.checked?hsel.add(h.id):hsel.delete(h.id));$$('.hc').forEach(c=>c.checked=e.target.checked)}};
+  $('#h_q').oninput=()=>{hf.q=$('#h_q').value;draw()};$('#h_m').onchange=()=>{hf.m=$('#h_m').value;draw()};
+  $('#h_csv').onclick=()=>download(`lich-su-${stamp()}.csv`,toCSV(['Thời gian','Tên học sinh','Lớp','Chế độ','Điểm','Kết quả','Thời lượng (giây)'],hist.map(h=>[new Date(h.ts).toLocaleString('vi-VN'),h.name,h.cls,h.mode,h.score,h.result,h.dur])),'text/csv');
+  $('#h_dsel').onclick=async()=>{if(!hsel.size)return toast('Chưa chọn lượt nào.',true);if(await ask(`Xóa ${hsel.size} lượt đã chọn?`,{danger:true,ok:'Xóa'})){hist=hist.filter(h=>!hsel.has(h.id));hsel.clear();saveHist();admHist()}};
+  $('#h_dall').onclick=async()=>{if(await ask(`Xóa TOÀN BỘ ${hist.length} lượt lịch sử? Không thể hoàn tác.`,{danger:true,ok:'Xóa toàn bộ',type:'XOA'})){hist=[];hsel.clear();saveHist();admHist()}};
+  draw();
+}
+
+/* ---- Hệ thống: kiểm tra / backup / restore / reset ---- */
+async function systemCheck(){
+  const R=[];const add=(n,ok,m)=>R.push([n,ok,m]);
+  try{const k='eduapp.__t',v=String(Math.random());localStorage.setItem(k,v);const ok=localStorage.getItem(k)===v;localStorage.removeItem(k);add('LocalStorage',ok,ok?'Ghi/đọc bình thường':'Đọc lại không khớp')}catch(e){add('LocalStorage',false,e.message)}
+  try{const id='__test'+uid();await DB.put({id,name:'test',added:0,kind:'text',text:'x'});const all=await DB.all();const ok=all.some(x=>x.id===id);await DB.del(id);add('IndexedDB',ok,ok?'Ghi/đọc bình thường ('+(all.length-1)+' học liệu)':'Không đọc lại được')}catch(e){add('IndexedDB',false,e.message)}
+  const pub=published().length;add('Ngân hàng câu hỏi',pub>=4,`${bank.length} câu, ${pub} đã xuất bản${pub<4?' (cần ≥ 4)':''}`);
+  const bad=bank.filter(q=>!q.q||q.o.length!==4||q.o.some(x=>!x)||!(q.a>=0&&q.a<=3)).length;add('Tính hợp lệ của câu hỏi',bad===0,bad?bad+' câu thiếu dữ liệu':'Tất cả đều hợp lệ');
+  add('Hệ thống giao diện',!!getComputedStyle(document.documentElement).getPropertyValue('--pri').trim(),'Màu chủ đạo: '+cfg.color);
+  add('File API',!!(window.File&&window.FileReader&&window.Blob),'File, FileReader, Blob');
+  add('Giải nén DOCX/PPTX',!!window.DecompressionStream,window.DecompressionStream?'Hỗ trợ':'Trình duyệt không hỗ trợ — chỉ dùng được TXT/MD/CSV/JSON/PDF/ảnh');
+  add('Trạng thái Gemini API Key',!!sessionStorage.getItem('eduapp.gkey'),sessionStorage.getItem('eduapp.gkey')?'Đã nhập trong phiên (không lưu lâu dài)':'Chưa nhập key (chỉ cần khi dùng AI)');
+  const probe={...cfg,__probe:Date.now()};add('Khả năng lưu cấu hình',LS.set(K.cfg,probe)&&LS.set(K.cfg,cfg),'Ghi → đọc lại → xác minh');
+  add('Âm thanh',!!(window.AudioContext||window.webkitAudioContext),'Web Audio');add('Toàn màn hình',!!document.documentElement.requestFullscreen,'Fullscreen API');
+  const d=$('#dlg');d.innerHTML=`<div class="ed"><h3>🩺 Kết quả kiểm tra hệ thống</h3><table>${R.map(r=>`<tr><td>${r[1]?'✅':'⚠️'}</td><td><b>${r[0]}</b></td><td class="${r[1]?'':'bad-t'}">${esc(r[2])}</td></tr>`).join('')}</table><div class="row end"><button class="btn pri" id="e_c">Đóng</button></div></div>`;$('#e_c').onclick=()=>d.close();d.showModal();
+}
+async function doBackup(){
+  let mats=[];try{mats=(await DB.all()).filter(m=>m.kind!=='blob')}catch(e){}
+  const data={app:'eduapp',version:'3.1',created:new Date().toISOString(),cfg:{...cfg},bank,hist,materials:mats};
+  download(`backup-eduapp-${stamp()}.json`,JSON.stringify(data));toast('Đã tạo Backup (không gồm Gemini API Key và tệp PDF/ảnh).');
+}
+async function doRestore(file){
+  try{const d=JSON.parse(await file.text());if(d.app!=='eduapp'||!Array.isArray(d.bank))throw new Error('Đây không phải file Backup của Education App.');
+    if(!await ask(`Khôi phục từ Backup? Dữ liệu hiện tại (${bank.length} câu hỏi, ${hist.length} lượt chơi) sẽ bị thay thế.<br><span class="mut small">Backup ngày ${esc(d.created||'?')} · ${d.bank.length} câu · ${(d.hist||[]).length} lượt chơi</span>`,{danger:true,ok:'Khôi phục'}))return;
+    cfg={...DEF_CFG,...(d.cfg||{})};delete cfg.__probe;bank=d.bank;hist=d.hist||[];
+    if(!(LS.set(K.cfg,cfg)&&LS.set(K.bank,bank)&&LS.set(K.hist,hist)))throw new Error('Không ghi được vào bộ nhớ trình duyệt (có thể do logo/dữ liệu quá lớn).');
+    await DB.clear();for(const m of d.materials||[])await DB.put(m);
+    sessionStorage.removeItem('eduapp.admin');applyTheme();renderHeader();toast('Đã khôi phục hệ thống.');go('home');
+  }catch(e){toast('Restore lỗi: '+e.message,true)}
+}
+function admSys(){
+  $('#adm').innerHTML=`<div class="card"><h3>🩺 Kiểm tra hệ thống</h3><p class="mut small">Kiểm tra LocalStorage, IndexedDB, ngân hàng câu hỏi, giao diện, File API, Gemini API Key và khả năng lưu cấu hình.</p><button class="btn pri" id="s_chk">🩺 KIỂM TRA HỆ THỐNG</button></div>
+  <div class="card" style="margin-top:16px"><h3>💾 Backup / Restore</h3><p class="mut small">Backup JSON gồm cấu hình, ngân hàng câu hỏi (kèm trạng thái), lịch sử và học liệu dạng văn bản/URL. <b>Không gồm Gemini API Key.</b> Để chuyển sang máy khác: Backup → lưu file → mở app ở máy mới → Restore.</p>
+  <div class="row"><button class="btn pri" id="s_bk">Tạo Backup</button><button class="btn" id="s_rs">Restore từ file…</button><input type="file" id="s_rf" accept=".json" hidden></div></div>
+  <div class="card" style="margin-top:16px"><h3>♻️ Khôi phục & Factory Reset</h3><div class="row"><button class="btn" id="s_def">Khôi phục 50 câu hỏi mặc định</button><button class="btn danger" id="s_fr">Factory Reset</button></div>
+  <p class="mut small">Factory Reset xóa cấu hình tùy chỉnh, ngân hàng câu hỏi, lịch sử, học liệu và mọi thiết lập; đưa app về trạng thái ban đầu.</p></div>`;
+  $('#s_chk').onclick=systemCheck;$('#s_bk').onclick=doBackup;$('#s_rs').onclick=()=>$('#s_rf').click();
+  $('#s_rf').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)doRestore(f)};
+  $('#s_def').onclick=async()=>{if(await ask('Khôi phục 50 câu hỏi Nguyễn Văn Trỗi? Các câu mặc định đã sửa sẽ bị ghi đè; câu hỏi khác được giữ nguyên.')){bank=bank.filter(q=>!/^nvt-/.test(q.id)).concat(defaultBank());if(saveBank())toast('Đã khôi phục 50 câu mặc định.')}};
+  $('#s_fr').onclick=async()=>{if(await ask('<b>Factory Reset</b> sẽ xóa toàn bộ dữ liệu của app trên trình duyệt này. Nên tạo Backup trước.',{danger:true,ok:'Xóa tất cả',type:'RESET'})){Object.values(K).forEach(k=>localStorage.removeItem(k));sessionStorage.clear();try{await DB.clear()}catch(e){}load();applyTheme();renderHeader();toast('Đã đưa app về trạng thái ban đầu.');go('home')}};
+}
+
+/* ====================== KHỞI ĐỘNG ====================== */
+load();applyTheme();renderHeader();go('home');
+</script>
+</body>
+</html>
